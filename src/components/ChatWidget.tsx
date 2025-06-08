@@ -25,7 +25,7 @@ export default function ChatWidget() {
     try {
       setIsTyping(true);
 
-      const response = await fetch("http://localhost:8080/api/chatbot/chat", {
+      const response = await fetch("https://back-complete-86430845382.us-central1.run.app/api/chatbot/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMsg }),
