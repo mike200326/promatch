@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion, useAnimation, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
 export default function Home() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { scrollYProgress } = useScroll();
   const heroVideoRef = useRef<HTMLVideoElement>(null);
@@ -14,7 +13,6 @@ export default function Home() {
 
   // Parallax transforms (scaled down for less dramatic effect)
   const yPosAnim = useTransform(scrollYProgress, [0, 1], [0, -300]);
-  const scaleAnim = useTransform(scrollYProgress, [0, 0.5], [1, 1.3]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -67,15 +65,10 @@ export default function Home() {
     { value: "24h", label: "tiempo promedio para el primer contacto", icon: "⚡" },
   ];
 
-  const controls = useAnimation();
   const [heroRef, heroInView] = useInView({ threshold: 0.1, triggerOnce: true });
   const [statsRef, statsInView] = useInView({ threshold: 0.3, triggerOnce: true });
   const [featuresRef, featuresInView] = useInView({ threshold: 0.3, triggerOnce: true });
   const [testimonialsRef, testimonialsInView] = useInView({ threshold: 0.3, triggerOnce: true });
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -680,7 +673,7 @@ export default function Home() {
                     <motion.blockquote 
                       className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed italic font-light"
                     >
-                      "{testimonials[currentTestimonial].content}"
+                      &ldquo;{testimonials[currentTestimonial].content}&rdquo;
                     </motion.blockquote>
 
                     <div>
@@ -833,7 +826,7 @@ export default function Home() {
                   { name: "Twitter", bg: "bg-sky-500" },
                   { name: "LinkedIn", bg: "bg-blue-700" },
                   { name: "Instagram", bg: "bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500" }
-                ].map((social, index) => (
+                ].map((social) => (
                   <motion.a
                     key={social.name}
                     href="#"
@@ -916,7 +909,7 @@ export default function Home() {
                   bgColor: "bg-gray-800",
                   icon: "▶️",
                 }
-              ].map((store, index) => (
+              ].map((store) => (
                 <motion.a
                   key={store.name}
                   href="#"
