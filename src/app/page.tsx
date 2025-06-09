@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 export default function Home() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { scrollYProgress } = useScroll();
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const teamVideoRef = useRef<HTMLVideoElement>(null);
@@ -29,6 +30,20 @@ export default function Home() {
     if (teamVideoRef.current) {
       teamVideoRef.current.play();
     }
+  }, []);
+
+  useEffect(() => {
+    const checkLogin = () => {
+      const storedUserId = sessionStorage.getItem("userId");
+      setIsLoggedIn(!!storedUserId);
+    };
+
+    checkLogin();
+    window.addEventListener("storage", checkLogin);
+
+    return () => {
+      window.removeEventListener("storage", checkLogin);
+    };
   }, []);
 
   const testimonials = [
@@ -251,7 +266,7 @@ export default function Home() {
               className="group relative px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-lg shadow-md overflow-hidden"
             >
               <span className="relative flex items-center gap-2">
-                Empieza ahora
+                {isLoggedIn ? "Análisis CV" : "Empieza ahora"}
                 <motion.svg
                   className="w-5 h-5"
                   fill="none"
