@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
+import PasswordRecoveryModal from "@/components/PasswordRecoveryModal";
 
 export default function LoginPage() {
   const { login, getToken } = useAuth();
@@ -13,6 +14,7 @@ export default function LoginPage() {
   });
 
   const [error, setError] = useState("");
+  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -26,7 +28,6 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // 1. Autenticación con Firebase
       await login(formData.email, formData.password);
 
       const token = await getToken();
@@ -34,7 +35,6 @@ export default function LoginPage() {
         throw new Error("No se pudo obtener el token de autenticación.");
       }
 
-      //  2. Petición al backend para obtener el userId
       const res = await fetch(
         "https://back-complete-86430845382.us-central1.run.app/api/auth/login",
         {
@@ -106,6 +106,17 @@ export default function LoginPage() {
             required
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-black"
           />
+
+          <div className="text-right">
+            <button
+              type="button"
+              onClick={() => setShowRecoveryModal(true)}
+              className="text-sm text-blue-600 hover:underline"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
+          </div>
+
           <button
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-semibold rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-800 transition"
@@ -123,6 +134,11 @@ export default function LoginPage() {
             Regístrate aquí
           </a>
         </p>
+
+        <PasswordRecoveryModal
+          show={showRecoveryModal}
+          onClose={() => setShowRecoveryModal(false)}
+        />
       </motion.div>
     </main>
   );

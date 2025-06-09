@@ -454,21 +454,32 @@ useEffect(() => {
       </div>
 
       {/* SUBIR CV */}
-      <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4 text-gray-500">
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={handleFileChange}
-          className="border p-3 rounded-lg shadow-sm w-full sm:w-auto"
-        />
-        <button
-          onClick={handleSubmit}
-          disabled={isSubmitting || !cvFile}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-blue-700 transition "
-        >
-          {isSubmitting ? "Analizando..." : "Subir CV"}
-        </button>
-      </div>
+      <div className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 text-[#1A56DB]">
+  <label className="cursor-pointer flex items-center space-x-3 bg-white border border-[#1A56DB] rounded-lg px-6 py-3 shadow-md hover:bg-[#1A56DB]/10 transition">
+    <input
+      type="file"
+      accept=".pdf"
+      onChange={handleFileChange}
+      className="hidden"
+    />
+    <span className="text-sm font-semibold">
+      {cvFile ? cvFile.name : "Elegir archivo (PDF)"}
+    </span>
+  </label>
+
+  <button
+    onClick={handleSubmit}
+    disabled={isSubmitting || !cvFile}
+    className={`px-6 py-3 rounded-lg font-bold transition shadow-md ${
+      isSubmitting || !cvFile
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-[#1A56DB] text-white hover:bg-[#154bbf]"
+    }`}
+  >
+    {isSubmitting ? "Analizando..." : "Subir CV"}
+  </button>
+</div>
+
     </div>
   );
 }

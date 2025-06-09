@@ -1,7 +1,10 @@
+// src/app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import { AuthStatusProvider } from "@/context/AuthStatusContext";
+import { AuthUIProvider } from "@/context/AuthUIContext";
 import NavbarLayout from "@/components/NavbarLayout";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,8 +22,12 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-      <AuthProvider>
-          <NavbarLayout>{children}</NavbarLayout>
+        <AuthProvider>
+          <AuthStatusProvider>
+            <AuthUIProvider>
+              <NavbarLayout>{children}</NavbarLayout>
+            </AuthUIProvider>
+          </AuthStatusProvider>
         </AuthProvider>
       </body>
     </html>

@@ -5,9 +5,10 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-//import ChatWidget from "@/components/ChatWidget";
 import { UserCircle } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useAuthStatus } from "@/context/AuthStatusContext";
+
 export default function NavbarLayout({
   children,
 }: {
@@ -19,9 +20,9 @@ export default function NavbarLayout({
     ssr: false,
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const { isLoggedIn, setIsLoggedIn } = useAuthStatus();
 
   useEffect(() => {
     const checkLogin = () => {
@@ -38,7 +39,7 @@ export default function NavbarLayout({
     return () => {
       window.removeEventListener("storage", checkLogin);
     };
-  }, []);
+  }, [setIsLoggedIn]);
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -197,7 +198,6 @@ export default function NavbarLayout({
           </div>
         </div>
 
-        {/* Menú móvil */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
