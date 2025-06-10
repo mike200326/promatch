@@ -237,46 +237,6 @@ export default function Home() {
               inteligencia artificial avanzada
             </motion.span>
           </motion.p>
-
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row justify-center gap-6 mb-16"
-          >
-            <motion.button
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-lg shadow-md overflow-hidden"
-            >
-              <span className="relative flex items-center gap-2">
-                Empieza ahora
-                <motion.svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.8, repeat: Infinity }}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </motion.svg>
-              </span>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ 
-                scale: 1.05,
-                borderColor: "rgb(0,0,0)",
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="group px-8 py-4 bg-white/90 backdrop-blur-xl text-gray-900 rounded-2xl font-bold text-lg border-2 border-gray-200 shadow-md"
-            >
-              <span className="relative">Cómo funciona</span>
-            </motion.button>
-          </motion.div>
-
           <motion.div
             variants={itemVariants}
             className="flex justify-center items-center gap-8 text-base"
