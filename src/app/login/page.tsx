@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAuth } from "firebase/auth";
+import PasswordRecoveryModal from "@/components/PasswordRecoveryModal";
+
 
 interface ValidationErrors {
   email?: string;
@@ -34,6 +36,7 @@ export default function LoginPage() {
     email: false,
     password: false
   });
+  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockTimeLeft, setBlockTimeLeft] = useState(0);
@@ -649,26 +652,28 @@ export default function LoginPage() {
             )}
           </motion.button>
 
-          {/* Enlaces */}
-          <div className="mt-6 space-y-3 text-center">
-            <p className="text-gray-600 text-sm">
-              ¿No tienes una cuenta?{' '}
-              <a
-                href="/register"
-                className="text-black font-semibold hover:underline transition-all duration-200"
-              >
-                Regístrate aquí
-              </a>
-            </p>
-            <a
-              href="/forgot-password"
-              className="block text-gray-500 text-sm hover:text-black transition-all duration-200"
-            >
-              ¿Olvidaste tu contraseña?
-            </a>
-          </div>
+{/* Enlaces */}
+<div className="mt-6 space-y-3 text-center">
+  <p className="text-gray-600 text-sm">
+    ¿No tienes una cuenta?{' '}
+    <a
+      href="/register"
+      className="text-black font-semibold hover:underline transition-all duration-200"
+    >
+      Regístrate aquí
+    </a>
+  </p>
+  <button
+    type="button"
+    onClick={() => setShowRecoveryModal(true)}
+    className="block text-gray-500 text-sm hover:text-black transition-all duration-200 mx-auto"
+  >
+    ¿Olvidaste tu contraseña?
+  </button>
+</div>
         </motion.form>
 
+        {/* Modal de recuperación de contraseña */}
         {/* Información adicional */}
         <motion.div 
           className="mt-6 text-center text-xs text-gray-500"
@@ -679,6 +684,11 @@ export default function LoginPage() {
           Mantén tu cuenta segura. Nunca compartas tus credenciales.
         </motion.div>
       </motion.div>
+      {/* Modal de recuperación de contraseña */}
+      <PasswordRecoveryModal
+        show={showRecoveryModal}
+        onClose={() => setShowRecoveryModal(false)}
+      />
     </main>
   );
 }
