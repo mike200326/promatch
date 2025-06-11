@@ -23,13 +23,14 @@ type ClusterItem = {
   razon: string;
 };
 
+// Colores mejorados con mejor contraste y legibilidad
 const COLORS = [
-  "#FF9B00",
-  "#1A56DB",
-  "#111827",
-  "#00B86B",
-  "#E50914",
-  "#FF5A5F",
+  "#2563EB", // Blue 600
+  "#DC2626", // Red 600
+  "#059669", // Green 600
+  "#7C3AED", // Purple 600
+  "#EA580C", // Orange 600
+  "#0891B2", // Cyan 600
 ];
 
 type PositionItem = [string, number];
@@ -38,6 +39,44 @@ type ChartDataItem = {
   name: string;
   value: number;
   color: string;
+};
+
+// Componente personalizado para el tooltip
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+        <p className="text-gray-900 font-semibold text-base">{`${payload[0].name}`}</p>
+        <p className="text-gray-700 text-sm">{`Compatibilidad: ${payload[0].value}%`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+// Función para renderizar etiquetas personalizadas
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }) => {
+  const RADIAN = Math.PI / 180;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  // Solo mostrar porcentaje si es mayor al 5%
+  if (percent < 0.05) return null;
+
+  return (
+    <text 
+      x={x} 
+      y={y} 
+      fill="#1F2937" 
+      textAnchor={x > cx ? 'start' : 'end'} 
+      dominantBaseline="central"
+      fontSize="14"
+      fontWeight="600"
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
 };
 
 export default function DashboardPage() {
@@ -199,7 +238,12 @@ export default function DashboardPage() {
     }
 
     try {
-      const canvas = await html2canvas(chartRef.current, { scale: 2 });
+      const canvas = await html2canvas(chartRef.current, { 
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        allowTaint: true
+      });
       const imgData = canvas.toDataURL("image/png");
 
       const pdf = new jsPDF({
@@ -292,45 +336,45 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
-      {/* Subtle Animated Background Elements */}
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+      {/* Fondo animado mejorado */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-4000"></div>
       </div>
 
-      <div className="relative z-10 py-10 px-4">
-        {/* Header */}
+      <div className="relative z-10 py-8 px-4 sm:px-6 lg:px-8">
+        {/* Header mejorado */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
             Analiza tu CV con IA
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Descubre tus oportunidades laborales y mejora tu perfil profesional con análisis inteligente
           </p>
         </motion.div>
 
-        {/* Upload Section - Now at the top */}
+        {/* Sección de carga mejorada */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="max-w-3xl mx-auto mb-12"
+          className="max-w-4xl mx-auto mb-12"
         >
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
-            className={`relative bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-2xl p-12 transition-all duration-300 border ${
+            className={`relative bg-white rounded-3xl shadow-lg p-8 sm:p-12 transition-all duration-300 border-2 ${
               isDragging 
-                ? "border-4 border-dashed border-indigo-500 bg-indigo-50/50 scale-105 shadow-indigo-200/50" 
-                : "border border-gray-200 hover:border-indigo-400 hover:shadow-indigo-100/50"
+                ? "border-dashed border-indigo-500 bg-indigo-50 scale-105 shadow-indigo-200/50" 
+                : "border-gray-200 hover:border-indigo-300 hover:shadow-xl"
             }`}
           >
             <div className="text-center">
@@ -345,58 +389,60 @@ export default function DashboardPage() {
                 }}
                 className="inline-block mb-6"
               >
-                <svg className="w-20 h-20 mx-auto text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
               </motion.div>
               
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 leading-tight">
                 {cvFile ? `Archivo seleccionado: ${cvFile.name}` : "Arrastra tu CV aquí"}
               </h3>
-              <p className="text-gray-500 mb-6">o haz clic para seleccionar</p>
+              <p className="text-gray-500 mb-8 text-base sm:text-lg">o haz clic para seleccionar un archivo PDF</p>
               
-              <label className="relative cursor-pointer inline-block">
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <span className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 inline-block">
-                  Seleccionar PDF
-                </span>
-              </label>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <label className="relative cursor-pointer inline-block">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <span className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 inline-block">
+                    Seleccionar PDF
+                  </span>
+                </label>
 
-              {cvFile && (
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className={`ml-4 px-8 py-4 rounded-full font-bold text-lg shadow-lg transform transition-all duration-300 ${
-                    isSubmitting
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-xl hover:scale-105"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Analizando...
-                    </span>
-                  ) : "Analizar CV"}
-                </motion.button>
-              )}
+                {cvFile && (
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className={`px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg shadow-lg transform transition-all duration-300 ${
+                      isSubmitting
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-xl hover:scale-105"
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Analizando...
+                      </span>
+                    ) : "Analizar CV"}
+                  </motion.button>
+                )}
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Main Content Grid */}
+        {/* Grid principal mejorado */}
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Chart */}
+          {/* Columna izquierda - Gráfico mejorado */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -404,10 +450,10 @@ export default function DashboardPage() {
           >
             <Card
               ref={chartRef}
-              className="bg-white shadow-2xl rounded-3xl border border-gray-100 hover:shadow-3xl transition-shadow duration-300"
+              className="bg-white shadow-xl rounded-3xl border border-gray-100 hover:shadow-2xl transition-shadow duration-300"
             >
-              <CardHeader className="pb-2">
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl sm:text-3xl font-bold text-gray-900 text-center">
                   Oportunidades para ti
                 </CardTitle>
               </CardHeader>
@@ -415,60 +461,53 @@ export default function DashboardPage() {
               <CardContent>
                 {chartData.length > 0 ? (
                   <>
-                    <ResponsiveContainer width="100%" height={400}>
-                      <PieChart>
-                        <defs>
-                          {chartData.map((entry, index) => (
-                            <linearGradient key={`gradient-${index}`} id={`gradient-${index}`}>
-                              <stop offset="0%" stopColor={entry.color} stopOpacity={0.8} />
-                              <stop offset="100%" stopColor={entry.color} stopOpacity={1} />
-                            </linearGradient>
-                          ))}
-                        </defs>
-                        <Pie
-                          data={chartData}
-                          dataKey="value"
-                          nameKey="name"
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={120}
-                          label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                          labelLine={false}
-                          animationBegin={0}
-                          animationDuration={1500}
-                        >
-                          {chartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={`url(#gradient-${index})`} />
-                          ))}
-                        </Pie>
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                            borderRadius: '12px',
-                            border: 'none',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                          }} 
-                        />
-                        <Legend 
-                          wrapperStyle={{
-                            paddingTop: '20px'
-                          }}
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
+                    <div className="bg-white rounded-2xl p-4">
+                      <ResponsiveContainer width="100%" height={450}>
+                        <PieChart>
+                          <Pie
+                            data={chartData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={renderCustomizedLabel}
+                            outerRadius={140}
+                            fill="#8884d8"
+                            animationBegin={0}
+                            animationDuration={1500}
+                            stroke="#ffffff"
+                            strokeWidth={2}
+                          >
+                            {chartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend 
+                            wrapperStyle={{
+                              paddingTop: '30px',
+                              fontSize: '14px',
+                              color: '#374151'
+                            }}
+                            iconType="circle"
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
 
-                    <div className="mt-6 p-6 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 rounded-2xl border border-indigo-100">
-                      <h2 className="font-bold text-lg text-gray-800 mb-2">
+                    <div className="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+                      <h2 className="font-bold text-lg sm:text-xl text-gray-900 mb-3">
                         Resumen del Análisis
                       </h2>
-                      <p className="text-gray-700 leading-relaxed">{summary}</p>
+                      <p className="text-gray-700 leading-relaxed text-base">{summary}</p>
                     </div>
 
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={handleDownloadPDF}
-                      className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="mt-6 w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-4 rounded-full font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-300"
                     >
                       <span className="flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -479,11 +518,11 @@ export default function DashboardPage() {
                     </motion.button>
                   </>
                 ) : (
-                  <div className="text-center py-16">
-                    <svg className="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="text-center py-20">
+                    <svg className="w-20 h-20 sm:w-24 sm:h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <p className="text-gray-500 text-lg">
+                    <p className="text-gray-500 text-lg font-medium">
                       Sube tu CV para comenzar el análisis
                     </p>
                   </div>
@@ -492,7 +531,7 @@ export default function DashboardPage() {
             </Card>
           </motion.div>
 
-          {/* Right Column */}
+          {/* Columna derecha mejorada */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -500,18 +539,18 @@ export default function DashboardPage() {
             className="space-y-6"
           >
             {recommendedCluster && (
-              <Card className="bg-gradient-to-br from-red-500 to-orange-500 text-white shadow-2xl rounded-3xl border-0 hover:shadow-3xl transition-all duration-300 transform hover:scale-105">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-bold">
+              <Card className="bg-gradient-to-br from-red-500 to-orange-500 text-white shadow-xl rounded-3xl border-0 hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xl sm:text-2xl font-bold">
                     Te recomendamos mejorar en
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <h3 className="text-3xl font-bold">
+                    <h3 className="text-2xl sm:text-3xl font-bold leading-tight">
                       {recommendedCluster.recommendation}
                     </h3>
-                    <p className="text-white/90 text-lg">
+                    <p className="text-white/90 text-base sm:text-lg leading-relaxed">
                       <span className="font-semibold">Motivo:</span> {recommendedCluster.razon}
                     </p>
                     <motion.button
@@ -524,7 +563,7 @@ export default function DashboardPage() {
                           )}`
                         )
                       }
-                      className="bg-white text-orange-600 px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="bg-white text-orange-600 px-6 sm:px-8 py-3 rounded-full font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300"
                     >
                       Hacer Examen
                     </motion.button>
@@ -533,9 +572,9 @@ export default function DashboardPage() {
               </Card>
             )}
 
-            <Card className="bg-white shadow-2xl rounded-3xl border border-gray-100">
+            <Card className="bg-white shadow-xl rounded-3xl border border-gray-100">
               <CardHeader>
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">
                   Empresas donde podrías trabajar
                 </CardTitle>
               </CardHeader>
@@ -547,17 +586,17 @@ export default function DashboardPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
-                      whileHover={{ x: 10 }}
-                      className="bg-white border border-gray-200 p-5 rounded-2xl shadow-md hover:shadow-xl hover:border-indigo-200 transition-all duration-300"
+                      whileHover={{ x: 5 }}
+                      className="bg-white border border-gray-200 p-5 rounded-2xl shadow-md hover:shadow-lg hover:border-indigo-200 transition-all duration-300"
                     >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h4 className="font-bold text-lg text-gray-800">{name}</h4>
-                          <div className="flex items-center mt-1">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                        <div className="flex-1">
+                          <h4 className="font-bold text-base sm:text-lg text-gray-800 leading-tight">{name}</h4>
+                          <div className="flex items-center mt-2">
                             <span className="text-sm text-gray-600">
                               +{Math.floor(Math.random() * 6) + 1} coincidencias
                             </span>
-                            <div className="ml-2 flex">
+                            <div className="ml-3 flex">
                               {[...Array(5)].map((_, i) => (
                                 <svg
                                   key={i}
@@ -576,12 +615,12 @@ export default function DashboardPage() {
                           </div>
                         </div>
                         <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={() =>
                             router.push(`/examen?title=${encodeURIComponent(name)}`)
                           }
-                          className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300"
+                          className="bg-gradient-to-r from-purple-500 to-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-300 self-start sm:self-center"
                         >
                           Hacer Examen
                         </motion.button>
@@ -589,8 +628,11 @@ export default function DashboardPage() {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500">
+                  <div className="text-center py-12">
+                    <svg className="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <p className="text-gray-500 text-base font-medium">
                       Las empresas aparecerán después del análisis
                     </p>
                   </div>
