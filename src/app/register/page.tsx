@@ -250,7 +250,7 @@ export default function RegisterPage() {
     if (/\d/.test(password)) strength++;
     if (/[@$!%*?&]/.test(password)) strength++;
 
-    const labels = ['Muy débil', 'Débil', 'Regular', 'Buena', 'Excelente'];
+    const labels = ['Muy débil', 'Débil', 'Regular', 'Buena', 'Perfecta'];
     const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500'];
     
     return {

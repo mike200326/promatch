@@ -408,24 +408,6 @@ export default function Home() {
                 variants={itemVariants}
                 className="flex flex-wrap gap-4"
               >
-                <motion.button
-                  whileHover={{ 
-                    scale: 1.05,
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.1)"
-                  }}
-                  className="px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-base shadow-md"
-                >
-                  Ver características
-                </motion.button>
-                <motion.button
-                  whileHover={{ 
-                    scale: 1.05,
-                    borderColor: "rgb(0,0,0)",
-                  }}
-                  className="px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold text-base border-2 border-gray-200 shadow-md"
-                >
-                  Ver demostración
-                </motion.button>
               </motion.div>
             </motion.div>
 
