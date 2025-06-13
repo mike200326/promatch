@@ -145,7 +145,20 @@ export default function MyApplicantsPage() {
     if (allApplicants.length > 0) {
       const uniqueStatuses = [...new Set(allApplicants.map(a => a.status))];
       console.log("Estados únicos encontrados en la API:", uniqueStatuses);
-      console.log("Estadísticas calculadas:", stats);
+      
+      // Calculate stats inside the effect to avoid dependency issues
+      const normalizeStatus = (status: string) => status?.toLowerCase().trim();
+      const calculatedStats = {
+        total: allApplicants.length,
+        agregados: allApplicants.filter(a => normalizeStatus(a.status) === "agregado").length,
+        enProceso: allApplicants.filter(a => normalizeStatus(a.status) === "en_proceso" || normalizeStatus(a.status) === "en proceso").length,
+        contactados: allApplicants.filter(a => normalizeStatus(a.status) === "contactado").length,
+        seleccionados: allApplicants.filter(a => normalizeStatus(a.status) === "seleccionado").length,
+        rechazados: allApplicants.filter(a => normalizeStatus(a.status) === "rechazado").length,
+        avgScore: allApplicants.length > 0 ? Math.round(allApplicants.reduce((sum, a) => sum + (a.score || 0), 0) / allApplicants.length) : 0
+      };
+      
+      console.log("Estadísticas calculadas:", calculatedStats);
     }
   }, [allApplicants]);
 
